@@ -1,0 +1,17 @@
+# OS junk
+Thumbs.db
+desktop.ini
+.DS_Store
+*.swp
+
+# 分发产物不入库（用 package_skill.py 现场生成）
+*.zip
+
+# 日志与临时文件
+*.log
+*.tmp
+
+# 敏感信息（双保险：正常流程下这些就不该出现）
+*.key
+*.pem
+.env
