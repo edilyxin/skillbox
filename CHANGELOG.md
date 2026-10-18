@@ -7,6 +7,18 @@
 
 （暂无）
 
+## 2026-10-18 — v1.1.0（pc-maintenance windows）
+
+### Added
+- 新铁律 9 + software.md 新陷阱：**同一软件可能双版本并存**（传统安装版 + Microsoft
+  Store 版）——实测微软电脑管家两份并存，卸掉传统版后 Store 版服务
+  `PCManager Service Store` 照常自启；给出双路排查法（卸载注册表 +
+  `Get-AppxPackage -AllUsers`）与 Store 版标准卸载顺序（先停+禁用再卸包）
+- software.md 处置手法：商店应用卸载前，有常驻服务的先停服务 + 禁用启动类型
+
+### Fixed
+- 无（本次为纯经验沉淀，脚本无改动）
+
 ## 2026-10-18 — 建库
 
 ### Added

@@ -7,7 +7,7 @@
 
 | OS | 目录 | 版本 | 状态 | 备注 |
 |---|---|---|---|---|
-| Windows | `windows/` | v1.0.0 | ✅ 活跃 | Win11 23H2/24H2 + WorkBuddy 沙箱实战验证 |
+| Windows | `windows/` | v1.1.0 | ✅ 活跃 | Win11 23H2/24H2 + WorkBuddy 沙箱实战验证 |
 | macOS | `macos/` | — | 🚧 未建 | 计划：在 Mac mini 上落地后回填 |
 | Linux | `linux/` | — | 🚧 未建 | 计划：服务器维护场景 |
 

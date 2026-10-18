@@ -2,7 +2,7 @@
 name: pc-maintenance
 description: Windows 电脑全面维护方法论。当用户要求体检/优化/清理任何 Windows 机器（开机慢、黑屏、卡顿、软件混乱、更新异常），或要求对新机器建立维护档案、定期维护、持续改进维护体系时使用。覆盖四大支柱：基本性能维护（开机/服务/更新/磁盘）、常用软件维护（卸载白名单/孤儿服务/计划任务）、每机长期记忆策略（机器档案+跨任务可见）、持续改进（指标追踪+技能迭代）。触发词：电脑体检、开机慢、黑屏、优化笔记本、清理电脑、电脑维护、新机器建档。
 agent_created: true
-version: 1.0.0
+version: 1.1.0
 os: windows
 ---
 
@@ -26,6 +26,7 @@ os: windows
 6. **PowerShell 脚本含中文时必须存为 UTF-8 带 BOM**：PS 5.1 把无 BOM 的 UTF-8 当 ANSI(GB2312) 读，中文注释行尾的多字节序列会吞掉换行符，导致下一行被并入注释——代码静默丢失或解析错位（症状：`ExpressionsMustBeFirstInPipeline`、行号错位、变量为空）。Write 工具写出的是无 BOM 文件，**写完 .ps1 后必须用 `[System.IO.File]::WriteAllText($f,$c,New-Object System.Text.UTF8Encoding($true))` 补 BOM**
 7. **事件日志消息含隐形字符**：Windows 事件 Message 里混有 U+200E/U+200F（LRM/RLM），`Boot Duration:‎431278ms` 这类数字前可能带隐形标记，写正则必须宽容：`'Boot Duration[^\d]*(\d+)\s*ms'`，别用 `':\s*'`
 8. **友商残留可能躲在 System32**：联想电源服务 `IBMPMSVC` 的二进制在 `C:\WINDOWS\System32\ibmpmsvc.exe`（不在品牌目录，删目录清不掉它）——清残留必须按**服务路径全盘搜**（`Win32_Service | ? PathName -match '品牌名'`），不能只删品牌目录
+9. **同一软件可能有两个版本并存**：传统安装版（Program Files，卸载器管）+ Store 版（WindowsApps，Get-AppxPackage 管）。实测卸了微软电脑管家传统版后，Store 版的服务 `PCManager Service Store` 照常自启——查软件必须双路：卸载注册表 **和** `Get-AppxPackage -AllUsers`，并用服务 PathName 反查二进制真实位置（可能在 WindowsApps/System32/ProgramData）
 
 ## 工作流决策树
 

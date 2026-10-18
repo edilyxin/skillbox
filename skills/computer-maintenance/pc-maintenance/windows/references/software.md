@@ -29,7 +29,7 @@
    Invoke-CimMethod -InputObject $s -MethodName ChangeStartMode -Arguments @{StartMode='Disabled'}
    Stop-Service -Name 'XXX' -Force -EA SilentlyContinue
    ```
-4. **商店应用**：`Get-AppxPackage -AllUsers -Name 'XXX' | Remove-AppxPackage -AllUsers`，失败退回 `Remove-AppxProvisionedPackage`
+4. **商店应用**：`Get-AppxPackage -AllUsers -Name 'XXX' | Remove-AppxPackage -AllUsers`，失败退回 `Remove-AppxProvisionedPackage`；**有常驻服务的先停服务 + ChangeStartMode Disabled 再卸**（否则卸不干净，或服务变孤儿）
 5. **死键死任务**：目标文件确认不存在后，删 Run 键值 / `Unregister-ScheduledTask`
 
 ## 卸载后四项验证（缺一不可）
@@ -52,6 +52,7 @@ Get-ItemProperty 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\*','
 - **卸载器跑完≠干净**：卸载程序退出后要复查目录残留和注册表（实测鲁大师卸载器跑完仍留 1.1GB 目录 + 938 文件 + 内核驱动）
 - **瞬态失败**：功能更新期间商店应用更新报 0x80073D02 是组件占用导致的瞬态冲突，更新装完后自动恢复，不要当时干预
 - **残留可能躲在 System32**：友商服务的二进制不一定在自家目录——联想 `IBMPMSVC`（ibmpmsvc.exe）就在 `C:\WINDOWS\System32\` 下，删 `C:\Program Files\Lenovo` 清不掉它。正确做法：按服务路径全盘搜 `Get-CimInstance Win32_Service | ? {$_.PathName -match 'Lenovo|ImController|IBMPM|fibocom|DPR'}`，逐个禁用后删二进制（先确认无其他服务引用同一文件）
+- **同一软件可能双版本并存（传统安装版 + Store 版）**：实测微软电脑管家在本机同时存在两份——传统安装版（`C:\Program Files\Microsoft PC Manager`，`uninst.exe /S` 可卸）和 Microsoft Store 版（`C:\Program Files\WindowsApps\Microsoft.MicrosoftPCManager_3.23.0.0_x64__8wekyb3d8bbwe`，归 Get-AppxPackage 管）。卸掉传统版后，**Store 版的服务照常运行**（`PCManager Service Store`，LocalSystem/Automatic，PathName 指向 WindowsApps）——普通卸载程序完全摸不到 Store 版。正确做法：① 卸载注册表 **和** `Get-AppxPackage -AllUsers -Name '*关键词*'` 双路查；② Store 版先停服务 + ChangeStartMode Disabled，再 `Remove-AppxPackage -AllUsers`；③ 包 deregister 后 WindowsApps 里可能留孤儿目录（实测 555 项），受 TrustedInstaller ACL 保护、常规手段删不掉属正常，无害不纠缠，记录即可
 - **luafv 类微软驱动首启被阻止**：功能更新后首次开机，合法微软驱动（如 luafv.sys LUA 虚拟化）可能报 "blocked from loading"（事件 7000），多为瞬态，下次启动观察是否恢复；StartMode 仍为 Auto 的不用动，反复被阻再查驱动 blocklist
 
 ## 新软件安装的网络出口选择（沙箱环境）

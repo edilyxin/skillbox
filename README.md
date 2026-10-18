@@ -38,7 +38,7 @@ skillbox/
 
 | 技能 | 分类 | 可用系统 | 当前版本 | 状态 | 说明 |
 |---|---|---|---|---|---|
-| pc-maintenance | computer-maintenance | Windows | 1.0.0 | ✅ 活跃 | Windows 电脑全面维护：体检→整改→验证→建档→持续维护 |
+| pc-maintenance | computer-maintenance | Windows | 1.1.0 | ✅ 活跃 | Windows 电脑全面维护：体检→整改→验证→建档→持续维护 |
 
 > 新增/升级/废弃技能后，必须同步更新本表和 [CHANGELOG.md](CHANGELOG.md)。
 
